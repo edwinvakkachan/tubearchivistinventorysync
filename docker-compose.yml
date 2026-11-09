@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+
+  tubearchivistinventorysync:
+
+    build: .
+
+    container_name: tubearchivistinventorysync
+
+    restart: no
+
+    environment:
+      TUBEARCHIVIST_API_KEY: ${TUBEARCHIVIST_API_KEY}
+      TUBEARCHIVIST_URL: ${TUBEARCHIVIST_URL}
+      MONGODB_URI: ${MONGODB_URI}
+      TUBEARCHIVIST_PAGE_SIZE: ${TUBEARCHIVIST_PAGE_SIZE}
+      TUBEARCHIVIST_RESET_DRY_RUN: ${TUBEARCHIVIST_RESET_DRY_RUN}
+      MONGODB_DATABASE: ${MONGODB_DATABASE}
+
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+
+    networks:
+      - shared_network
+
+    mem_limit: 256m
+    mem_reservation: 128m
+
+    cpus: 0.50
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  shared_network:
+    external: true
